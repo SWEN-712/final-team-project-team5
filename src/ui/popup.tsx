@@ -14,12 +14,34 @@ class Hello extends React.Component {
       buttonEnlargementAmount: 0,
     }
     this.handleChange = this.handleChange.bind(this)
+    this.handleSmoothingChange = this.handleSmoothingChange.bind(this)
+
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state['smoothingEnabled'] !== prevState['smoothingEnabled']) {
+
+        chrome.tabs.query({active:true, currentWindow:true}, function(tab){
+          chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"mouseSmoothing", content:"toggle"})
+        });
+
+    }
+  }
+
+  handleSmoothingChange(event){
+    this.handleChange(event);
+    chrome.tabs.query({active:true, currentWindow:true}, function(tab){
+        chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"smoothingAmount", content:event.target.value })
+      });
+
   }
 
   handleCheckboxChange(event) {
-    console.log("handleCheckboxChange")
+    console.log("handleCheckboxChange");
     this.setState({ [event.target.name]: !this.state[event.target.name] })
+
   }
 
   handleChange(event) {
@@ -57,7 +79,7 @@ class Hello extends React.Component {
             min="0"
             max="100%"
             value={this.state["smoothingAmount"]}
-            onChange={this.handleChange}
+            onChange={this.handleSmoothingChange}
             readOnly={!this.state["smoothingEnabled"]}
           />
           <label>
