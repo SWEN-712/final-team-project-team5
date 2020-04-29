@@ -12,31 +12,49 @@ class Hello extends React.Component {
       smoothingAmount: 0,
       buttonEnlargementEnabled: false,
       buttonEnlargementAmount: 0,
-    }
+    };
     this.handleChange = this.handleChange.bind(this)
     this.handleSmoothingChange = this.handleSmoothingChange.bind(this)
 
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    this.handleEnlargementChange  = this.handleEnlargementChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if(this.state['smoothingEnabled'] !== prevState['smoothingEnabled']) {
-
         chrome.tabs.query({active:true, currentWindow:true}, function(tab){
           chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"mouseSmoothing", content:"toggle"})
         });
-
     }
+
+      if(this.state['buttonEnlargementEnabled'] !== prevState['buttonEnlargementEnabled']) {
+          chrome.tabs.query({active:true, currentWindow:true}, function(tab){
+              chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"buttonEnlargementToggle", content:"toggle"})
+          });
+      }
+
+
   }
 
   handleSmoothingChange(event){
-    this.handleChange(event);
     chrome.tabs.query({active:true, currentWindow:true}, function(tab){
+
         chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"smoothingAmount", content:event.target.value })
       });
+      this.handleChange(event);
 
   }
+
+
+    handleEnlargementChange(event){
+        this.handleChange(event);
+        chrome.tabs.query({active:true, currentWindow:true}, function(tab){
+            chrome.tabs.sendMessage(tab[0].id, {from:"ui", subject:"buttonEnlargementAmount", content:event.target.value })
+        });
+
+    }
+
 
   handleCheckboxChange(event) {
     console.log("handleCheckboxChange");
@@ -47,12 +65,6 @@ class Hello extends React.Component {
   handleChange(event) {
     console.log("handleChange")
     this.setState({ [event.target.name]: event.target.value })
-    var y = document.querySelectorAll("button")
-    console.log(y)
-    for (let element of y) {
-      let percent = event.target.value + "%"
-      element.style.fontSize = "4000%"
-    }
   }
 
   render() {
@@ -80,7 +92,6 @@ class Hello extends React.Component {
             max="100%"
             value={this.state["smoothingAmount"]}
             onChange={this.handleSmoothingChange}
-            readOnly={!this.state["smoothingEnabled"]}
           />
           <label>
             <h3>Button Enlargement</h3>
@@ -104,8 +115,7 @@ class Hello extends React.Component {
             min="0"
             max="100%"
             value={this.state["buttonEnlargementAmount"]}
-            onChange={this.handleChange}
-            readOnly={!this.state["buttonEnlargementAmount"]}
+            onChange={this.handleEnlargementChange}
           />
         </form>
       </div>
