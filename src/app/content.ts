@@ -33,7 +33,7 @@ let ButtonEnlargement = {
     enlargementAmount: 100,
     buttonsBig: false,
     enlargeButtons: function() {
-        var y = document.querySelectorAll("button");
+        var y = document.querySelectorAll("a");
         for (let element of y) {
             let percent = ButtonEnlargement.enlargementAmount + "%";
             element.style.fontSize = percent;
@@ -65,7 +65,7 @@ function enlargeButtons(){
 let ElementCursor = {
     cursorElement: null,
     enabled:false,
-    updateLimit:1,
+    updateLimit:100,
     updateCounter: 0,
     setCursor: function () {
         document.getElementsByTagName('html')[0].style.cssText = "cursor:none;";
