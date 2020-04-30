@@ -94,7 +94,7 @@ class Hello extends React.Component {
             onChange={this.handleSmoothingChange}
           />
           <label>
-            <h3>Button Enlargement</h3>
+            <h3>Link Enlargement</h3>
           </label>
           <label>Enable:</label>
           <input
