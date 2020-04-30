@@ -65,7 +65,7 @@ function enlargeButtons(){
 let ElementCursor = {
     cursorElement: null,
     enabled:false,
-    updateLimit:100,
+    updateLimit:10,
     updateCounter: 0,
     setCursor: function () {
         document.getElementsByTagName('html')[0].style.cssText = "cursor:none;";
